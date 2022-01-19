@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
+
 import axios from 'axios';
 import { ModalSinStock } from './components/ModalSinStock';
 import { ModalVenta } from './components/ModalVenta';
@@ -40,7 +40,6 @@ function App() {
       [name] : value
     }))
 
-    console.log(productoSeleccionado);
   }
 
   const handleVentaChange = (e) => {
@@ -50,19 +49,13 @@ function App() {
   }
 
   const handleSubmitVenta = () =>{
-    
-    
-    
     setProductoSeleccionado( (prevState) =>
-
     (
       {
         ...prevState,
         stock_producto : prevState.stock_producto-venta
       } 
     ))
-   
-    
     setModalVenta(!modalVenta);
     peticionPut();
   }
@@ -109,7 +102,6 @@ function App() {
     f.append("METHOD", "POST");
     await axios.post(baseUrl, f)
       .then( response => {
-        console.log(response);
         setData(data.concat(response.data));
         abrirCerrarModalInsertar();
       })
