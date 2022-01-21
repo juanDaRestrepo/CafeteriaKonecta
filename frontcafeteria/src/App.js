@@ -13,12 +13,18 @@ function App() {
   const baseUrl = 'http://localhost/CafeteriaKonecta/apiCafeteriaKonecta/';
   
   const [data, setData] = useState([]);
+  //Hooks para el manejo de la aparición o desaparición de los modal 
   const [modalInsertar, setModalInsertar] = useState(false);
   const [modalEditar, setModalEditar] = useState(false);
   const [modalEliminar, setModalEliminar] = useState(false);
   const [modalVenta, setModalVenta] = useState(false);
   const [modalSinStock, setModalSinStock] = useState(false);
+
+  //Este hook es para tener un registro del numero de productos vendido del producto al ser cambiado en el input del modalVenta
   const [venta, setVenta] = useState(1);
+
+  //Cuando se selecciona un producto a ser editado o para hacerse una venta del mismo se sobreescribe la constante productoSeleccionado 
+  //para hacer la respectiva modificación en la base de datos 
   const [productoSeleccionado, setProductoSeleccionado ] = useState({
     id_producto:'',
     nombre_producto:'',
@@ -29,12 +35,13 @@ function App() {
     peso_producto:'',
     fecha_creacion_producto:''
   });
-  
+  const {stock_producto} = productoSeleccionado;
  
-
+  //---------------------------------------------------------------------------------------------------------------------------------
+ 
+ //Metodos para manejar los eventos
   const handleChange = (e) => {
     const {name, value} = e.target;
-    console.log(name);
     setProductoSeleccionado( (prevState) => ({
       ...prevState,
       [name] : value
@@ -45,21 +52,27 @@ function App() {
   const handleVentaChange = (e) => {
     const {value} = e.target;
     setVenta(value);
-    console.log(venta);
+    
   }
 
-  const handleSubmitVenta = () =>{
-    setProductoSeleccionado( (prevState) =>
-    (
-      {
-        ...prevState,
-        stock_producto : prevState.stock_producto-venta
-      } 
-    ))
-    setModalVenta(!modalVenta);
+  const handleSubmitVenta = (productoSeleccionado) =>{
+    
+    const nuevo_stock = (stock_producto-venta).toString();
+
+     setProductoSeleccionado({
+       ...productoSeleccionado,
+       stock_producto : nuevo_stock
+     })
+
+    console.log(productoSeleccionado);
+
     peticionPut();
+    setModalVenta(!modalVenta);
+
+    
   }
 
+//--------- Metodos para modificar el estado de slo hooks que manaje el estado de abierto y cerrado de las ventanas
   const abrirCerrarModalInsertar = () => {
     setModalInsertar(!modalInsertar);
   }
@@ -90,6 +103,7 @@ function App() {
       })
   }
   
+//Metodos para hacer las peticiones  al api 
   const peticionPost = async() => {
     var f = new FormData();
     f.append("nombre_producto", productoSeleccionado.nombre_producto);
@@ -134,10 +148,12 @@ function App() {
             producto.peso_producto=productoSeleccionado.peso_producto;
           }
         })
+        
         setData(dataNueva);
         if(modalEditar===true){
           abrirCerrarModalEditar();
         }
+        console.log("se realizó put con exito")
       })
       .catch(error=>{
         console.log(error);
@@ -155,7 +171,7 @@ function App() {
       console.log(error);
     })
   }
-
+//Metodo que me permite 
   const seleccionarProducto = (producto, caso) => {
     setProductoSeleccionado(producto);
     if(caso === "Editar" ){
@@ -163,7 +179,7 @@ function App() {
     }else if(caso === "Eliminar"){
       abrirCerrarModalEliminar();
     }else{
-      if(producto.stock_producto>0){
+      if(producto.stock_producto>0){ 
         abrirCerrarModalVenta();
       }else{
         abrirCerrarModalSinStock();
@@ -174,6 +190,8 @@ function App() {
   useEffect( () => {
     peticionGet();
   }, []);
+
+ 
 
   return (
     /* tabla principal para ver eliminar y editar productos */

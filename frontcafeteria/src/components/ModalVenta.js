@@ -1,7 +1,8 @@
 import React from 'react';
 import {Modal, ModalBody, ModalFooter} from 'reactstrap';
 
-export const ModalVenta = ({modalVenta, productoSeleccionado, handleVentaChange, handleSubmitVenta, abrirCerrarModalVenta}) => {
+export const ModalVenta = React.memo(({modalVenta, productoSeleccionado, handleVentaChange, handleSubmitVenta, abrirCerrarModalVenta}) => {
+    
   return <div>
             <Modal isOpen={modalVenta}>
             <ModalBody>
@@ -12,7 +13,7 @@ export const ModalVenta = ({modalVenta, productoSeleccionado, handleVentaChange,
                 <br />
             </ModalBody>
             <ModalFooter>
-                <button className="btn btn-danger" onClick={handleSubmitVenta}>
+                <button className="btn btn-danger" onClick={()=>handleSubmitVenta(productoSeleccionado)}>
                     descontar
                 </button>
                 <button
@@ -24,4 +25,4 @@ export const ModalVenta = ({modalVenta, productoSeleccionado, handleVentaChange,
             </ModalFooter>
             </Modal>  
         </div>;
-};
+});
