@@ -1,19 +1,23 @@
-import React, {useEffect, useState} from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+
+import React, {useEffect, useState} from 'react';
+
 import { ModalSinStock } from './components/modals/ModalSinStock';
 import { ModalVenta } from './components/modals/ModalVenta';
 import { ModalEliminar } from './components/modals/ModalEliminar';
 import { ModalInsertar } from './components/modals/ModalInsertar';
-import {ModalEditar} from './components/modals/ModalEditar';
+import { ModalEditar } from './components/modals/ModalEditar';
 import {ModalMasVendido} from './components/modals/ModalMasVendido';
 import { ModalMasStock } from './components/modals/ModalMasStock';
 function App() {
 
   const baseUrl = 'http://localhost/CafeteriaKonecta/apiCafeteriaKonecta/';
   
+  //hook donde se almacena el array que contiene todos los productos mostrados en la tabla principal
   const [data, setData] = useState([]);
+
   //Hooks para el manejo de la aparición o desaparición de los modal 
   const [modalInsertar, setModalInsertar] = useState(false);
   const [modalEditar, setModalEditar] = useState(false);
@@ -69,7 +73,7 @@ function App() {
 
   
 
-//--------- Metodos para modificar el estado de slo hooks que manaje el estado de abierto y cerrado de las ventanas
+//--------- Metodos para modificar el estado de los hooks que manejan el estado de abierto y cerrado de las ventanas
   const abrirCerrarModalInsertar = () => {
     setModalInsertar(!modalInsertar);
   }

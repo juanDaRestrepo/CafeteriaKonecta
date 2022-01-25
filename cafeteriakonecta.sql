@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-01-2022 a las 19:51:15
+-- Tiempo de generación: 25-01-2022 a las 20:06:45
 -- Versión del servidor: 10.4.22-MariaDB
 -- Versión de PHP: 7.3.33
 
@@ -43,11 +43,33 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id_producto`, `nombre_producto`, `referencia_producto`, `precio_producto`, `categoria_producto`, `stock_producto`, `fecha_creacion_producto`, `peso_producto`) VALUES
-(1, 'papas margarita', 'pm32', 2500, 'mecato', 20, '2022-01-06', 40),
 (2, 'croissant', 'c78', 1300, 'panaderia', 10, '2022-01-13', 60),
-(3, 'churro', 'ch7856', 2000, 'panaderia', 0, '2022-01-06', 30),
-(4, 'chocorramo', 'ch45', 1500, 'panaderia', 45, '1992-07-09', 45),
-(5, 'arepa con quesillo', 'acq23', 2600, 'panaderia', 10, '2021-12-12', 70);
+(5, 'arepa con quesillo', 'acq23', 2600, 'panaderia', 7, '2021-12-12', 70),
+(6, 'palitos de queso', 'pq23', 2000, 'panaderia', 0, '2022-01-20', 40),
+(7, 'bombom', 'bom5', 300, 'dulceria', 30, '2022-01-21', 34);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ventas`
+--
+
+CREATE TABLE `ventas` (
+  `id_producto` int(11) NOT NULL,
+  `venta` int(16) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `ventas`
+--
+
+INSERT INTO `ventas` (`id_producto`, `venta`) VALUES
+(5, 3),
+(6, 3),
+(6, 2),
+(6, 3),
+(6, 4),
+(6, 5);
 
 --
 -- Índices para tablas volcadas
@@ -60,6 +82,12 @@ ALTER TABLE `productos`
   ADD PRIMARY KEY (`id_producto`);
 
 --
+-- Indices de la tabla `ventas`
+--
+ALTER TABLE `ventas`
+  ADD KEY `id_producto` (`id_producto`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -67,7 +95,17 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `ventas`
+--
+ALTER TABLE `ventas`
+  ADD CONSTRAINT `ventas_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
