@@ -10,5 +10,10 @@ Pasos para instalar la prueba:
 
 consultas sql solicitadas:
 
-1. select nombre_producto, stock_producto from productos order by stock_producto desc limit 1.
-2. 
+1. SELECT nombre_producto, stock_producto FROM productos ORDER BY stock_producto DESC LIMIT 1.
+2. SELECT p.nombre_producto, SUM(v.venta) AS 'ventas' 
+    FROM productos AS p
+    JOIN ventas AS v
+    ON p.id_producto=v.id_producto 
+    GROUP BY p.nombre_producto 
+    ORDER BY ventas DESC LIMIT 1
