@@ -45,7 +45,18 @@ if($_POST['METHOD']=='PUT'){
     $stock_producto=$_POST['stock_producto'];
     $fecha_creacion_producto=$_POST['fecha_creacion_producto'];
     $peso_producto=$_POST['peso_producto'];
-    $query="UPDATE productos SET nombre_producto='$nombre_producto', referencia_producto='$referencia_producto', precio_producto='$precio_producto', categoria_producto='$categoria_producto', stock_producto='$stock_producto', fecha_creacion_producto='$fecha_creacion_producto', peso_producto='$peso_producto' WHERE id_producto='$id_producto'";
+    $query="update productos set nombre_producto='$nombre_producto', referencia_producto='$referencia_producto', precio_producto='$precio_producto', categoria_producto='$categoria_producto', stock_producto='$stock_producto', fecha_creacion_producto='$fecha_creacion_producto', peso_producto='$peso_producto' where id_producto='$id_producto'";
+    $resultado=metodoPut($query);
+    echo json_encode($resultado);
+    header("HTTP/1.1 200 OK");
+    exit();
+}
+
+if($_POST['METHOD']=='SELL'){
+    unset($_POST['METHOD']);
+    $id_producto=$_GET['id_producto'];
+    $stock_producto=$_POST['stock_producto'];
+    $query="update productos set stock_producto='$stock_producto' where id_producto='$id_producto'";
     $resultado=metodoPut($query);
     echo json_encode($resultado);
     header("HTTP/1.1 200 OK");
@@ -55,7 +66,7 @@ if($_POST['METHOD']=='PUT'){
 if($_POST['METHOD']=='DELETE'){
     unset($_POST['METHOD']);
     $id_producto=$_GET['id_producto'];
-    $query="DELETE FROM productos WHERE id_producto='$id_producto'";
+    $query="delete from productos where id_producto='$id_producto'";
     $resultado=metodoDelete($query);
     echo json_encode($resultado);
     header("HTTP/1.1 200 OK");

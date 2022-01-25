@@ -2,11 +2,11 @@ import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import axios from 'axios';
-import { ModalSinStock } from './components/ModalSinStock';
-import { ModalVenta } from './components/ModalVenta';
-import { ModalEliminar } from './components/ModalEliminar';
-import { ModalInsertar } from './components/ModalInsertar';
-import {ModalEditar} from './components/ModalEditar';
+import { ModalSinStock } from './components/modals/ModalSinStock';
+import { ModalVenta } from './components/modals/ModalVenta';
+import { ModalEliminar } from './components/modals/ModalEliminar';
+import { ModalInsertar } from './components/modals/ModalInsertar';
+import {ModalEditar} from './components/modals/ModalEditar';
 
 function App() {
 
@@ -21,7 +21,7 @@ function App() {
   const [modalSinStock, setModalSinStock] = useState(false);
 
   //Este hook es para tener un registro del numero de productos vendido del producto al ser cambiado en el input del modalVenta
-  const [venta, setVenta] = useState(1);
+  /* const [venta, setVenta] = useState(1); */
 
   //Cuando se selecciona un producto a ser editado o para hacerse una venta del mismo se sobreescribe la constante productoSeleccionado 
   //para hacer la respectiva modificación en la base de datos 
@@ -50,27 +50,20 @@ function App() {
   }
 
   const handleVentaChange = (e) => {
-    const {value} = e.target;
-    setVenta(value);
+    const {name} = e.target;
     
-  }
+    setProductoSeleccionado((prevState) => ({
+        ...prevState,
+        [name] : prevState.stock_producto-1
+    }))
 
-  const handleSubmitVenta = (productoSeleccionado) =>{
     
-    const nuevo_stock = (stock_producto-venta).toString();
-
-     setProductoSeleccionado({
-       ...productoSeleccionado,
-       stock_producto : nuevo_stock
-     })
-
     console.log(productoSeleccionado);
-
-    peticionPut();
-    setModalVenta(!modalVenta);
-
     
+
   }
+
+  
 
 //--------- Metodos para modificar el estado de slo hooks que manaje el estado de abierto y cerrado de las ventanas
   const abrirCerrarModalInsertar = () => {
@@ -125,6 +118,7 @@ function App() {
   }
 
   const peticionPut = async() => {
+    console.log("Estoy en el put"+productoSeleccionado.stock_producto)
     var f = new FormData();
     f.append("nombre_producto", productoSeleccionado.nombre_producto);
     f.append("referencia_producto", productoSeleccionado.referencia_producto);
@@ -133,8 +127,8 @@ function App() {
     f.append("stock_producto", productoSeleccionado.stock_producto);
     f.append("fecha_creacion_producto", productoSeleccionado.fecha_creacion_producto);
     f.append("peso_producto", productoSeleccionado.peso_producto);
-    f.append("METHOD", "PUT");
-    await axios.post(baseUrl, f, {params: {id: productoSeleccionado.id_producto}})
+    f.append("METHOD", "SELL");
+    await axios.post(baseUrl, f, {params: {id_producto: productoSeleccionado.id_producto}})
       .then( response => {
         var dataNueva = data;
         dataNueva.map(producto => {
@@ -152,6 +146,8 @@ function App() {
         setData(dataNueva);
         if(modalEditar===true){
           abrirCerrarModalEditar();
+        }else{
+          abrirCerrarModalVenta();
         }
         console.log("se realizó put con exito")
       })
@@ -160,10 +156,48 @@ function App() {
       })
   }
 
+
+
+  const peticionSell = async() => {
+    console.log("Estoy en el sell"+productoSeleccionado.stock_producto)
+    var f = new FormData();
+    f.append("stock_producto", productoSeleccionado.stock_producto);
+    f.append("METHOD", "SELL");
+    await axios.post(baseUrl, f, {params: {id_producto: productoSeleccionado.id_producto}})
+      .then( response => {
+        console.log(response);
+        var dataNueva = data;
+        dataNueva.map(producto => {
+          if(producto.id_producto===productoSeleccionado.id_producto){
+            producto.nombre_producto=productoSeleccionado.nombre_producto;
+            producto.referencia_producto=productoSeleccionado.referencia_producto;
+            producto.precio_producto=productoSeleccionado.precio_producto;
+            producto.categoria_producto=productoSeleccionado.categoria_producto;
+            producto.stock_producto=productoSeleccionado.stock_producto;
+            producto.fecha_creacion_producto=productoSeleccionado.fecha_creacion_producto;
+            producto.peso_producto=productoSeleccionado.peso_producto;
+          }
+        })
+        
+        setData(dataNueva);
+        if(modalEditar===true){
+          abrirCerrarModalEditar();
+        }else{
+          abrirCerrarModalVenta();
+        }
+        console.log("se realizó sell con exito")
+      })
+      .catch(error=>{
+        console.log(error);
+      })
+  }
+  
+
+
   const peticionDelete=async()=>{
     var f = new FormData();
     f.append("METHOD", "DELETE");
-    await axios.post(baseUrl, f, {params: {id: productoSeleccionado.id_producto}})
+    await axios.post(baseUrl, f, {params: {id_producto: productoSeleccionado.id_producto}})
     .then(response=>{
       setData(data.filter(producto=>producto.id_producto!==productoSeleccionado.id_producto));
       abrirCerrarModalEliminar();
@@ -262,8 +296,9 @@ function App() {
         modalVenta={modalVenta} 
         productoSeleccionado={productoSeleccionado} 
         handleVentaChange={handleVentaChange} 
-        handleSubmitVenta={handleSubmitVenta}
         abrirCerrarModalVenta={abrirCerrarModalVenta}
+        setProductoSeleccionado={setProductoSeleccionado}
+        peticionSell={peticionSell}
       /> 
 
       <ModalSinStock 
