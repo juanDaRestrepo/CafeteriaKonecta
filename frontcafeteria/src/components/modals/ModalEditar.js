@@ -1,7 +1,7 @@
 import React from 'react';
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 
-export const ModalEditar = ({modalEditar, handleChange, productoSeleccionado, peticionPut, abrirCerrarModalEditar}) => {
+export const ModalEditar = React.memo(({modalEditar, handleChange, productoSeleccionado, peticionPut, abrirCerrarModalEditar}) => {
   return <div>
       <Modal isOpen={modalEditar}>
         <ModalHeader>Insertar nuevo producto</ModalHeader>
@@ -43,4 +43,4 @@ export const ModalEditar = ({modalEditar, handleChange, productoSeleccionado, pe
         </ModalFooter>
       </Modal>
   </div>;
-};
+});

@@ -1,8 +1,8 @@
 import React from 'react';
 import {Modal, ModalBody, ModalFooter} from 'reactstrap';
 
-export const ModalVenta = React.memo(({modalVenta, productoSeleccionado, handleVentaChange, peticionSell, abrirCerrarModalVenta}) => {
-    
+export const ModalVenta = ({modalVenta, productoSeleccionado, handleVentaChange, peticionSell, abrirCerrarModalVenta}) => {
+    console.log('modal venta')
   return <div>
             <Modal isOpen={modalVenta}>
             <ModalBody>
@@ -25,4 +25,4 @@ export const ModalVenta = React.memo(({modalVenta, productoSeleccionado, handleV
             </ModalFooter>
             </Modal>  
         </div>;
-});
+};

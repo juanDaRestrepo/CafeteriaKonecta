@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const TablaPrincipal = ({data,abrirCerrarModalInsertar,abrirCerrarModalVenta,peticionGetMasStock,peticionGetMasVendido,setProductoSeleccionado}) => {
+export const TablaPrincipal = React.memo(({data,abrirCerrarModalInsertar,abrirCerrarModalVenta,peticionGetMasStock,peticionGetMasVendido,setProductoSeleccionado}) => {
 
     const seleccionarProducto = (producto, caso) => {
         setProductoSeleccionado(producto);
@@ -56,4 +56,4 @@ export const TablaPrincipal = ({data,abrirCerrarModalInsertar,abrirCerrarModalVe
                 </tbody>
             </table>
         </>;
-};
+});
