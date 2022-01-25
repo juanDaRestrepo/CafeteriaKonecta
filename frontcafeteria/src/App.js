@@ -11,6 +11,7 @@ import { ModalInsertar } from './components/modals/ModalInsertar';
 import { ModalEditar } from './components/modals/ModalEditar';
 import {ModalMasVendido} from './components/modals/ModalMasVendido';
 import { ModalMasStock } from './components/modals/ModalMasStock';
+import { TablaPrincipal } from './components/TablaPrincipal';
 function App() {
 
   const baseUrl = 'http://localhost/CafeteriaKonecta/apiCafeteriaKonecta/';
@@ -56,19 +57,16 @@ function App() {
       ...prevState,
       [name] : value
     }))
-
+ 
   }
 
   const handleVentaChange = (e) => {
     const {name} = e.target;
-    
     setProductoSeleccionado((prevState) => ({
         ...prevState,
         [name] : prevState.stock_producto-1
     }))
-  
     setVenta(venta+1);
-    console.log(venta);
   }
 
   
@@ -248,21 +246,6 @@ function App() {
       console.log(error);
     })
   }
-//Metodo que me permite 
-  const seleccionarProducto = (producto, caso) => {
-    setProductoSeleccionado(producto);
-    if(caso === "Editar" ){
-      abrirCerrarModalEditar();
-    }else if(caso === "Eliminar"){
-      abrirCerrarModalEliminar();
-    }else{
-      if(producto.stock_producto>0){ 
-        abrirCerrarModalVenta();
-      }else{
-        abrirCerrarModalSinStock();
-      }
-    }
-  }
 
   useEffect( () => {
     peticionGet();
@@ -273,46 +256,18 @@ function App() {
   return (
     /* tabla principal para ver eliminar y editar productos */
     <div className="App" style={{textAlign: 'center'}}>
-      <br />
-      <button className='btn btn-success' onClick={() => abrirCerrarModalInsertar()}>Insertar</button>
-      <button className='btn btn-warning' onClick={() => peticionGetMasVendido()}>Ver producto mas vendido</button>
-      <button className='btn btn-primary' onClick={() => peticionGetMasStock()}>Ver producto con mas Stock</button>
-      <table className='table table-striped'>
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Nombre</th>
-            <th>Referencia</th>
-            <th>Precio</th>
-            <th>Categoria</th>
-            <th>Stock</th>
-            <th>Peso</th>
-            <th>Fecha de Creación</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          { data.map( producto => (
-            <tr key={producto.id_producto}>
-              <td>{producto.id_producto}</td>
-              <td>{producto.nombre_producto}</td>
-              <td>{producto.referencia_producto}</td>
-              <td>{producto.precio_producto}</td>
-              <td>{producto.categoria_producto}</td>
-              <td>{producto.stock_producto}</td>
-              <td>{producto.peso_producto}</td>
-              <td>{producto.fecha_creacion_producto}</td>
-              <td>
-                <button className='btn btn-warning' onClick={() => seleccionarProducto(producto, 'Venta')}>Realizar venta</button>
-                <button className='btn btn-primary' onClick={() => seleccionarProducto(producto, 'Editar')}>Editar</button>
-                <button className='btn btn-danger' onClick={() => seleccionarProducto(producto, 'Eliminar')}>Eliminar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
 
-      {/* modal para insertar registros de productos */}
+        {/* Tabla principal para mostrar todos los productos existentes en la base de datos */}
+        <TablaPrincipal
+          setProductoSeleccionado={setProductoSeleccionado} 
+          data={data} 
+          abrirCerrarModalInsertar={abrirCerrarModalInsertar}
+          abrirCerrarModalVenta={abrirCerrarModalVenta} 
+          peticionGetMasStock={peticionGetMasStock} 
+          peticionGetMasVendido={peticionGetMasVendido}
+        />
+
+        {/* modal para insertar registros de productos */}
         <ModalInsertar 
           modalInsertar={modalInsertar}
           handleChange={handleChange}
@@ -320,8 +275,7 @@ function App() {
           abrirCerrarModalInsertar={abrirCerrarModalInsertar}
         />
 
-
-         {/* modal para modificar registros de productos */}
+        {/* modal para modificar registros de productos */}
         <ModalEditar 
           modalEditar={modalEditar} 
           handleChange={handleChange} 
@@ -330,40 +284,45 @@ function App() {
           abrirCerrarModalEditar={abrirCerrarModalEditar}
         />
 
-      <ModalEliminar 
-        modalEliminar={modalEliminar}
-        productoSeleccionado={productoSeleccionado}
-        peticionDelete={peticionDelete}
-        abrirCerrarModalEliminar={abrirCerrarModalEliminar}
-      />
+        {/* modal para elminar registros de productos */}
+        <ModalEliminar 
+          modalEliminar={modalEliminar}
+          productoSeleccionado={productoSeleccionado}
+          peticionDelete={peticionDelete}
+          abrirCerrarModalEliminar={abrirCerrarModalEliminar}
+        />
 
-      <ModalVenta 
-        modalVenta={modalVenta} 
-        productoSeleccionado={productoSeleccionado} 
-        handleVentaChange={handleVentaChange} 
-        abrirCerrarModalVenta={abrirCerrarModalVenta}
-        setProductoSeleccionado={setProductoSeleccionado}
-        peticionSell={peticionSell}
-      /> 
+        {/* modal para registrar venta de productos */}
+        <ModalVenta 
+          modalVenta={modalVenta} 
+          productoSeleccionado={productoSeleccionado} 
+          handleVentaChange={handleVentaChange} 
+          abrirCerrarModalVenta={abrirCerrarModalVenta}
+          setProductoSeleccionado={setProductoSeleccionado}
+          peticionSell={peticionSell}
+        /> 
 
-      <ModalSinStock 
-        modalSinStock={modalSinStock} 
-        abrirCerrarModalSinStock={abrirCerrarModalSinStock}
-      />
+        {/* modal para comunicar que no hay stock */}
+        <ModalSinStock 
+          modalSinStock={modalSinStock} 
+          abrirCerrarModalSinStock={abrirCerrarModalSinStock}
+        />
+        
+        {/* modal para mostrar el producto mas vendido */}
+        <ModalMasVendido 
+          modalMasVendido={modalMasVendido}
+          abrirCerrarModalMasVendido={abrirCerrarModalMasVendido}
+          masVendido={masVendido}
+        />
 
-      <ModalMasVendido 
-        modalMasVendido={modalMasVendido}
-        abrirCerrarModalMasVendido={abrirCerrarModalMasVendido}
-        masVendido={masVendido}
-      />
+        {/* modal para mostrar el producto con mas stock */}
+        <ModalMasStock 
+          modalMasStock={modalMasStock}
+          abrirCerrarModalMasStock={abrirCerrarModalMasStock}
+          masStock={masStock}
+        />
 
-      <ModalMasStock 
-        modalMasStock={modalMasStock}
-        abrirCerrarModalMasStock={abrirCerrarModalMasStock}
-        masStock={masStock}
-      />
-
-  </div>  
+      </div>  
       
     
   );

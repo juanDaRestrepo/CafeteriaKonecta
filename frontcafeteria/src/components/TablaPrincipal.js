@@ -1,8 +1,26 @@
 import React from 'react';
 
-export const TablaPrincipal = ({abrirCerrarModalInsertar, data, seleccionarProducto}) => {
-  return <div>
+export const TablaPrincipal = ({data,abrirCerrarModalInsertar,abrirCerrarModalVenta,peticionGetMasStock,peticionGetMasVendido,setProductoSeleccionado}) => {
+
+    const seleccionarProducto = (producto, caso) => {
+        setProductoSeleccionado(producto);
+        if(caso === "Editar" ){
+          abrirCerrarModalEditar();
+        }else if(caso === "Eliminar"){
+          abrirCerrarModalEliminar();
+        }else{
+          if(producto.stock_producto>0){ 
+            abrirCerrarModalVenta();
+          }else{
+            abrirCerrarModalSinStock();
+          }
+        }
+      }
+  return <>
+            <br />
             <button className='btn btn-success' onClick={() => abrirCerrarModalInsertar()}>Insertar</button>
+            <button className='btn btn-warning' onClick={() => peticionGetMasVendido()}>Ver producto mas vendido</button>
+            <button className='btn btn-primary' onClick={() => peticionGetMasStock()}>Ver producto con mas Stock</button>
             <table className='table table-striped'>
                 <thead>
                 <tr>
@@ -37,5 +55,5 @@ export const TablaPrincipal = ({abrirCerrarModalInsertar, data, seleccionarProdu
                 ))}
                 </tbody>
             </table>
-        </div>;
+        </>;
 };
