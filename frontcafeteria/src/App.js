@@ -7,7 +7,8 @@ import { ModalVenta } from './components/modals/ModalVenta';
 import { ModalEliminar } from './components/modals/ModalEliminar';
 import { ModalInsertar } from './components/modals/ModalInsertar';
 import {ModalEditar} from './components/modals/ModalEditar';
-
+import {ModalMasVendido} from './components/modals/ModalMasVendido';
+import { ModalMasStock } from './components/modals/ModalMasStock';
 function App() {
 
   const baseUrl = 'http://localhost/CafeteriaKonecta/apiCafeteriaKonecta/';
@@ -19,9 +20,14 @@ function App() {
   const [modalEliminar, setModalEliminar] = useState(false);
   const [modalVenta, setModalVenta] = useState(false);
   const [modalSinStock, setModalSinStock] = useState(false);
+  const [modalMasVendido, setModalMasVendido] = useState(false);
+  const [modalMasStock, setModalMasStock] = useState(false);
 
-  //Este hook es para tener un registro del numero de productos vendido del producto al ser cambiado en el input del modalVenta
-  /* const [venta, setVenta] = useState(1); */
+  // hooks para guardar y mostrar el producto con mas ventas y el producto con mas stock
+  const [venta, setVenta] = useState(0);
+  const [masVendido, setMasVendido] = useState([]);
+  const [masStock, setMasStock] = useState([])
+ 
 
   //Cuando se selecciona un producto a ser editado o para hacerse una venta del mismo se sobreescribe la constante productoSeleccionado 
   //para hacer la respectiva modificación en la base de datos 
@@ -35,7 +41,7 @@ function App() {
     peso_producto:'',
     fecha_creacion_producto:''
   });
-  const {stock_producto} = productoSeleccionado;
+  
  
   //---------------------------------------------------------------------------------------------------------------------------------
  
@@ -56,11 +62,9 @@ function App() {
         ...prevState,
         [name] : prevState.stock_producto-1
     }))
-
-    
-    console.log(productoSeleccionado);
-    
-
+  
+    setVenta(venta+1);
+    console.log(venta);
   }
 
   
@@ -86,6 +90,14 @@ function App() {
     setModalSinStock(!modalSinStock);
   } 
 
+  const  abrirCerrarModalMasVendido = () => {
+    setModalMasVendido(!modalMasVendido);
+  }
+
+  const  abrirCerrarModalMasStock = () => {
+    setModalMasStock(!modalMasStock);
+  }
+//----------------------------------------------------------------------
   const peticionGet = async() => {
     await axios.get(baseUrl)
       .then( response => {
@@ -94,6 +106,32 @@ function App() {
       .catch(error=>{
         console.log(error);
       })
+  }
+
+  const peticionGetMasStock = async() => {
+    var f = new FormData();
+    f.append("METHOD", "STOCK");
+    await axios.post(baseUrl,f)
+      .then( response => {
+        setMasStock(response.data)
+      })
+      .catch(error=>{
+        console.log(error);
+      })
+      abrirCerrarModalMasStock();
+  }
+
+  const peticionGetMasVendido = async() => {
+    var f = new FormData();
+    f.append("METHOD", "TOP");
+    await axios.post(baseUrl,f)
+      .then( response => {
+        setMasVendido(response.data)
+      })
+      .catch(error=>{
+        console.log(error);
+      })
+      abrirCerrarModalMasVendido();
   }
   
 //Metodos para hacer las peticiones  al api 
@@ -118,7 +156,7 @@ function App() {
   }
 
   const peticionPut = async() => {
-    console.log("Estoy en el put"+productoSeleccionado.stock_producto)
+    
     var f = new FormData();
     f.append("nombre_producto", productoSeleccionado.nombre_producto);
     f.append("referencia_producto", productoSeleccionado.referencia_producto);
@@ -159,9 +197,10 @@ function App() {
 
 
   const peticionSell = async() => {
-    console.log("Estoy en el sell"+productoSeleccionado.stock_producto)
+   
     var f = new FormData();
     f.append("stock_producto", productoSeleccionado.stock_producto);
+    f.append("venta_producto", venta)
     f.append("METHOD", "SELL");
     await axios.post(baseUrl, f, {params: {id_producto: productoSeleccionado.id_producto}})
       .then( response => {
@@ -232,6 +271,8 @@ function App() {
     <div className="App" style={{textAlign: 'center'}}>
       <br />
       <button className='btn btn-success' onClick={() => abrirCerrarModalInsertar()}>Insertar</button>
+      <button className='btn btn-warning' onClick={() => peticionGetMasVendido()}>Ver producto mas vendido</button>
+      <button className='btn btn-primary' onClick={() => peticionGetMasStock()}>Ver producto con mas Stock</button>
       <table className='table table-striped'>
         <thead>
           <tr>
@@ -305,6 +346,19 @@ function App() {
         modalSinStock={modalSinStock} 
         abrirCerrarModalSinStock={abrirCerrarModalSinStock}
       />
+
+      <ModalMasVendido 
+        modalMasVendido={modalMasVendido}
+        abrirCerrarModalMasVendido={abrirCerrarModalMasVendido}
+        masVendido={masVendido}
+      />
+
+      <ModalMasStock 
+        modalMasStock={modalMasStock}
+        abrirCerrarModalMasStock={abrirCerrarModalMasStock}
+        masStock={masStock}
+      />
+
   </div>  
       
     
