@@ -18,28 +18,7 @@ if($_SERVER['REQUEST_METHOD']=='GET'){
     exit();
 }
 
-if($_POST['METHOD']=='STOCK'){
-    $query="select nombre_producto, stock_producto from productos order by stock_producto desc limit 1";
-    $resultado=metodoGet($query);
-    echo json_encode($resultado->fetch(PDO::FETCH_ASSOC));
-    
-    header("HTTP/1.1 200 OK");
-    exit();
-}
 
-if($_POST['METHOD']=='TOP'){
-    $query="SELECT p.nombre_producto, SUM(v.venta) AS 'ventas' 
-                FROM productos AS p
-                JOIN ventas AS v
-                ON p.id_producto=v.id_producto 
-                GROUP BY p.nombre_producto 
-                ORDER BY ventas DESC LIMIT 1";
-    $resultado=metodoGet($query);
-    echo json_encode($resultado->fetch(PDO::FETCH_ASSOC));
-    
-    header("HTTP/1.1 200 OK");
-    exit();
-}
 
 if($_POST['METHOD']=='POST'){
     unset($_POST['METHOD']);
@@ -101,6 +80,26 @@ if($_POST['METHOD']=='DELETE'){
     exit();
 }
 
+if($_POST['METHOD']=='STOCK'){
+    $query="select nombre_producto, stock_producto from productos order by stock_producto desc limit 1";
+    $resultado=metodoGet($query);
+    echo json_encode($resultado->fetch(PDO::FETCH_ASSOC));
+    header("HTTP/1.1 200 OK");
+    exit();
+}
+
+if($_POST['METHOD']=='TOP'){
+    $query="SELECT p.nombre_producto, SUM(v.venta) AS 'ventas' 
+                FROM productos AS p
+                JOIN ventas AS v
+                ON p.id_producto=v.id_producto 
+                GROUP BY p.nombre_producto 
+                ORDER BY ventas DESC LIMIT 1";
+    $resultado=metodoGet($query);
+    echo json_encode($resultado->fetch(PDO::FETCH_ASSOC));
+    header("HTTP/1.1 200 OK");
+    exit();
+}
 header("HTTP/1.1 400 Bad Request");
 
 
