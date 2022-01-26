@@ -38,8 +38,8 @@ export const ModalEditar = ({modalEditar, handleChange, productoSeleccionado, pe
           </div>
         </ModalBody>
         <ModalFooter>
-          <button className="btn btn-primary" onClick={()=>peticionPut()}>Editar</button>{"   "}
-          <button className="btn btn-danger" onClick={()=>abrirCerrarModalEditar()}>Cancelar</button>
+          <button className="btn btn-light" onClick={()=>peticionPut()}>Editar</button>{"   "}
+          <button className="btn btn-dark" onClick={()=>abrirCerrarModalEditar()}>Cancelar</button>
         </ModalFooter>
       </Modal>
   </div>;

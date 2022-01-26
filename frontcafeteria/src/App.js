@@ -272,10 +272,10 @@ function App() {
 
       <br />
       {/* Tabla principal para mostrar todos los productos existentes en la base de datos */}
-          <button className='btn btn-success' onClick={() => abrirCerrarModalInsertar()}>Insertar</button>
-          <button className='btn btn-warning' onClick={() => peticionGetMasVendido()}>Ver producto mas vendido</button>
-          <button className='btn btn-primary' onClick={() => peticionGetMasStock()}>Ver producto con mas Stock</button>
-          <table className='table table-striped'>
+          <button className='btn btn-primary mb-3 ms-2' onClick={() => abrirCerrarModalInsertar()}>Insertar</button>
+          <button className='btn btn-info mb-3 ms-2' onClick={() => peticionGetMasVendido()}>Ver producto mas vendido</button>
+          <button className='btn btn-info mb-3 ms-2' onClick={() => peticionGetMasStock()}>Ver producto con mas Stock</button>
+          <table className='table table-striped table-hover'>
               <thead>
               <tr>
                   <th>Id</th>
@@ -301,8 +301,8 @@ function App() {
                   <td>{producto.peso_producto}</td>
                   <td>{producto.fecha_creacion_producto}</td>
                   <td>
-                      <button className='btn btn-warning' onClick={() => seleccionarProducto(producto, 'Venta')}>Realizar venta</button>
-                      <button className='btn btn-primary' onClick={() => seleccionarProducto(producto, 'Editar')}>Editar</button>
+                      <button className='btn btn-primary' onClick={() => seleccionarProducto(producto, 'Venta')}>Realizar venta</button>
+                      <button className='btn btn-warning' onClick={() => seleccionarProducto(producto, 'Editar')}>Editar</button>
                       <button className='btn btn-danger' onClick={() => seleccionarProducto(producto, 'Eliminar')}>Eliminar</button>
                   </td>
                   </tr>
