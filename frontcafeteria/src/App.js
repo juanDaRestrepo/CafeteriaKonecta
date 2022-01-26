@@ -11,7 +11,7 @@ import { ModalInsertar } from './components/modals/ModalInsertar';
 import { ModalEditar } from './components/modals/ModalEditar';
 import {ModalMasVendido} from './components/modals/ModalMasVendido';
 import { ModalMasStock } from './components/modals/ModalMasStock';
-import { TablaPrincipal } from './components/TablaPrincipal';
+
 function App() {
 
   const baseUrl = 'http://localhost/CafeteriaKonecta/apiCafeteriaKonecta/';
@@ -167,7 +167,7 @@ function App() {
     f.append("stock_producto", productoSeleccionado.stock_producto);
     f.append("fecha_creacion_producto", productoSeleccionado.fecha_creacion_producto);
     f.append("peso_producto", productoSeleccionado.peso_producto);
-    f.append("METHOD", "SELL");
+    f.append("METHOD", "PUT");
     await axios.post(baseUrl, f, {params: {id_producto: productoSeleccionado.id_producto}})
       .then( response => {
         var dataNueva = data;
@@ -251,23 +251,65 @@ function App() {
     peticionGet();
   }, []);
 
- 
+  const seleccionarProducto = (producto, caso) => {
+    setProductoSeleccionado(producto);
+    if(caso === "Editar" ){
+      abrirCerrarModalEditar();
+    }else if(caso === "Eliminar"){
+      abrirCerrarModalEliminar();
+    }else{
+      if(producto.stock_producto>0){ 
+        abrirCerrarModalVenta();
+      }else{
+        abrirCerrarModalSinStock();
+      }
+    }
+  }
 
   return (
     /* tabla principal para ver eliminar y editar productos */
     <div className="App" style={{textAlign: 'center'}}>
 
-        {/* Tabla principal para mostrar todos los productos existentes en la base de datos */}
-        <TablaPrincipal
-          setProductoSeleccionado={setProductoSeleccionado} 
-          data={data} 
-          abrirCerrarModalInsertar={abrirCerrarModalInsertar}
-          abrirCerrarModalVenta={abrirCerrarModalVenta} 
-          peticionGetMasStock={peticionGetMasStock} 
-          peticionGetMasVendido={peticionGetMasVendido}
-        />
-
-        {/* modal para insertar registros de productos */}
+      <br />
+      {/* Tabla principal para mostrar todos los productos existentes en la base de datos */}
+          <button className='btn btn-success' onClick={() => abrirCerrarModalInsertar()}>Insertar</button>
+          <button className='btn btn-warning' onClick={() => peticionGetMasVendido()}>Ver producto mas vendido</button>
+          <button className='btn btn-primary' onClick={() => peticionGetMasStock()}>Ver producto con mas Stock</button>
+          <table className='table table-striped'>
+              <thead>
+              <tr>
+                  <th>Id</th>
+                  <th>Nombre</th>
+                  <th>Referencia</th>
+                  <th>Precio</th>
+                  <th>Categoria</th>
+                  <th>Stock</th>
+                  <th>Peso</th>
+                  <th>Fecha de Creación</th>
+                  <th>Acciones</th>
+              </tr>
+              </thead>
+              <tbody>
+              { data.map( producto => (
+                  <tr key={producto.id_producto}>
+                  <td>{producto.id_producto}</td>
+                  <td>{producto.nombre_producto}</td>
+                  <td>{producto.referencia_producto}</td>
+                  <td>{producto.precio_producto}</td>
+                  <td>{producto.categoria_producto}</td>
+                  <td>{producto.stock_producto}</td>
+                  <td>{producto.peso_producto}</td>
+                  <td>{producto.fecha_creacion_producto}</td>
+                  <td>
+                      <button className='btn btn-warning' onClick={() => seleccionarProducto(producto, 'Venta')}>Realizar venta</button>
+                      <button className='btn btn-primary' onClick={() => seleccionarProducto(producto, 'Editar')}>Editar</button>
+                      <button className='btn btn-danger' onClick={() => seleccionarProducto(producto, 'Eliminar')}>Eliminar</button>
+                  </td>
+                  </tr>
+              ))}
+              </tbody>
+          </table>
+      {/* modal para insertar registros de productos */}
         <ModalInsertar 
           modalInsertar={modalInsertar}
           handleChange={handleChange}
@@ -277,11 +319,12 @@ function App() {
 
         {/* modal para modificar registros de productos */}
         <ModalEditar 
+          abrirCerrarModalEditar={abrirCerrarModalEditar}
           modalEditar={modalEditar} 
           handleChange={handleChange} 
           productoSeleccionado={productoSeleccionado} 
           peticionPut={peticionPut}
-          abrirCerrarModalEditar={abrirCerrarModalEditar}
+          
         />
 
         {/* modal para elminar registros de productos */}
