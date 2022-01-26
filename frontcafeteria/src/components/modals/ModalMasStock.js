@@ -2,7 +2,7 @@ import React from 'react';
 import {Modal, ModalBody, ModalFooter} from 'reactstrap';
 
 export const ModalMasStock = ({modalMasStock,abrirCerrarModalMasStock, masStock}) => {
-    console.log(masStock)
+   
   return <div>
             <Modal isOpen={modalMasStock}>
                 <ModalBody>

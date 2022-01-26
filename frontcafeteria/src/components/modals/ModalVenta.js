@@ -2,14 +2,14 @@ import React from 'react';
 import {Modal, ModalBody, ModalFooter} from 'reactstrap';
 
 export const ModalVenta = ({modalVenta, productoSeleccionado, handleVentaChange, peticionSell, abrirCerrarModalVenta}) => {
-    console.log('modal venta')
+    
   return <div>
             <Modal isOpen={modalVenta}>
             <ModalBody>
                 ¿Cuantos productos desea descontar del stock, tiene ({productoSeleccionado && productoSeleccionado.stock_producto})?<br />
                 <label>Stock: </label>
                 <br />
-                <input type="number" className="form-control" name="stock_producto" onChange={handleVentaChange} min="1" max={productoSeleccionado && productoSeleccionado.stock_producto} />
+                <input type="number" className="form-control" name="stock_producto" onChange={handleVentaChange} min="1" />
                 <br />
             </ModalBody>
             <ModalFooter>

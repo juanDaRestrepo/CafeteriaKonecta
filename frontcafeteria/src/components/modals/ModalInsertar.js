@@ -2,6 +2,7 @@ import React from 'react';
 import {Modal, ModalBody, ModalFooter,ModalHeader} from 'reactstrap';
 
 export const ModalInsertar = ({modalInsertar, handleChange, peticionPost, abrirCerrarModalInsertar}) => {
+    
   return <div>
             <Modal isOpen={modalInsertar}>
                 <ModalHeader>Insertar nuevo producto</ModalHeader>

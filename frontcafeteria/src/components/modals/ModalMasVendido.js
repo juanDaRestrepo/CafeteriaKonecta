@@ -2,7 +2,7 @@ import React from 'react';
 import {Modal, ModalBody, ModalFooter} from 'reactstrap';
 
 export const ModalMasVendido = ({modalMasVendido,abrirCerrarModalMasVendido, masVendido}) => {
-    console.log(masVendido);
+    
   return <div>
             <Modal isOpen={modalMasVendido}>
                 <ModalBody>
